@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flipkart - India's #1 Online Shopping</title>
+  <link rel="icon" href="https://static-assets-web.flixcart.com/www/promos/new/20150528-140547-favicon-retina.ico" />
+
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <link href="styles.css" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="topbar-inner">
+    <div class="fk-logo" onclick="showHome()">
+      <span>Flipkart</span>
+      <span class="tagline">Explore <em>Plus</em> <img
+                src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/plus-brand-bc165b.svg"
+                alt="explore_button" /></span>
+    </div>
+
+    <div class="fk-search" id="searchBox">
+      <input type="text" id="searchInput" placeholder="Search for products, brands and more" autocomplete="off"/>
+      <button onclick="runSearch()"><i class="bi bi-search"></i></button>
+      <ul class="search-suggestions" id="searchSuggestions"></ul>
+    </div>
+
+    <div class="fk-nav">
+      <button class="nav-btn" onclick="showToast('Login feature coming soon!')"><i class="bi bi-person-fill me-1"></i>Login</button>
+      <div class="nav-link" onclick="showToast('Seller portal coming soon!')">
+        <i class="bi bi-shop"></i><span>Become a Seller</span>
+      </div>
+      <div class="nav-link" onclick="showToast('Offers loaded!')">
+        <i class="bi bi-tag-fill"></i><span>Offers</span>
+      </div>
+      <div class="nav-link" onclick="toggleCart()">
+        <i class="bi bi-cart3"></i>
+        <span>Cart</span>
+        <span class="badge-count" id="cartCount">0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY NAV -->
+<div id="cat-nav">
+  <div class="cat-nav-inner" id="catNav"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page-wrap">
+
+  <!-- HOME PAGE -->
+  <div id="home-page">
+
+    <!-- Hero Carousel -->
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
+      <div class="carousel-indicators" id="carouselIndicators"></div>
+      <div class="carousel-inner" id="carouselSlides"></div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+
+    <!-- Deals of the Day -->
+    <div class="deal-strip">
+      <div class="deal-strip-header">
+        <h2><i class="bi bi-fire" style="color:#ff6b35; margin-right:8px;"></i>Deals of the Day</h2>
+        <div class="timer-box">
+          <span class="timer-unit" id="th">00</span>
+          <span class="timer-sep">:</span>
+          <span class="timer-unit" id="tm">00</span>
+          <span class="timer-sep">:</span>
+          <span class="timer-unit" id="ts">00</span>
+        </div>
+        <div class="view-all-link" onclick="viewAll('deals')">View All <i class="bi bi-chevron-right"></i></div>
+      </div>
+      <div class="deal-scroll" id="dealScroll"></div>
+    </div>
+
+    <!-- Offer Banners -->
+    <div class="offer-banners" id="offerBanners"></div>
+
+    <!-- Best of Electronics -->
+    <div class="section-head">
+      <h2><i class="bi bi-lightning-charge-fill" style="color:#ffc107; margin-right:8px;"></i>Best of Electronics</h2>
+      <div class="view-all-link" onclick="viewAll('Electronics')">View All <i class="bi bi-chevron-right"></i></div>
+    </div>
+    <div class="section-body">
+      <div class="prod-grid" id="electronicsGrid"></div>
+    </div>
+
+    <!-- Fashion -->
+    <div class="section-head">
+      <h2><i class="bi bi-bag" style="margin-right:8px;"></i>Top Fashion Picks</h2>
+      <div class="view-all-link" onclick="viewAll('Fashion')">View All <i class="bi bi-chevron-right"></i></div>
+    </div>
+    <div class="section-body">
+      <div class="prod-grid" id="fashionGrid"></div>
+    </div>
+
+    <!-- Home & Kitchen -->
+    <div class="section-head">
+      <h2><i class="bi bi-house-fill" style="margin-right:8px;"></i>Home & Kitchen</h2>
+      <div class="view-all-link" onclick="viewAll('Home')">View All <i class="bi bi-chevron-right"></i></div>
+    </div>
+    <div class="section-body">
+      <div class="prod-grid" id="homeGrid"></div>
+    </div>
+
+  </div><!-- /home-page -->
+
+  <!-- SEARCH RESULTS PAGE -->
+  <div id="search-page">
+    <div class="row g-3">
+      <div class="col-lg-2 col-md-3">
+        <div class="filter-sidebar">
+          <h5><i class="bi bi-funnel-fill me-2"></i>Filters</h5>
+          <div class="filter-group">
+            <h6>Price Range</h6>
+            <input type="range" class="form-range" id="priceRange" min="0" max="200000" step="500" value="200000" oninput="filterByPrice(this.value)"/>
+            <div class="price-range-labels"><span>₹0</span><span id="priceLabel">₹2,00,000</span></div>
+          </div>
+          <div class="filter-group">
+            <h6>Rating</h6>
+            <div class="form-check" id="ratingFilters"></div>
+          </div>
+          <div class="filter-group">
+            <h6>Brand</h6>
+            <div id="brandFilters"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-10 col-md-9">
+        <div class="d-flex align-items-center justify-content-between mb-3 bg-white p-3 rounded">
+          <span id="searchResultTitle" class="fw-bold"></span>
+          <select class="form-select w-auto" id="sortSelect" onchange="applySortFilter()">
+            <option value="rel">Relevance</option>
+            <option value="lh">Price: Low to High</option>
+            <option value="hl">Price: High to Low</option>
+            <option value="rat">Rating</option>
+            <option value="disc">Discount</option>
+          </select>
+        </div>
+        <div class="prod-grid" id="searchResults"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<!-- ══════════ FOOTER ══════════ -->
+<div id="footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h6>About</h6>
+      <ul>
+        <li>About Us</li><li>Careers</li><li>Press</li><li>Flipkart Stories</li><li>Wholesale</li><li>Cleartrip</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h6>Help</h6>
+      <ul>
+        <li>Payments</li><li>Shipping</li><li>Cancellation & Returns</li><li>FAQ</li><li>Report Infringement</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h6>Consumer Policy</h6>
+      <ul>
+        <li>Return Policy</li><li>Terms Of Use</li><li>Security</li><li>Privacy</li><li>Sitemap</li><li>EPR Compliance</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h6>Social</h6>
+      <ul>
+        <li><i class="bi bi-facebook me-2"></i>Facebook</li>
+        <li><i class="bi bi-twitter-x me-2"></i>Twitter</li>
+        <li><i class="bi bi-youtube me-2"></i>YouTube</li>
+        <li><i class="bi bi-instagram me-2"></i>Instagram</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h6>Registered Office</h6>
+      <ul>
+        <li style="white-space:normal;line-height:1.6">Flipkart Internet Private Limited, Buildings Alyssa, Begonia & Clove, Embassy Tech Village, Outer Ring Road, Devarabeesanahalli, Bengaluru, 560103</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span>© 2006-2026 Flipkart.com</span>
+      <span>Trustpay · 100% Payment Protection</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PRODUCT MODAL ══════════ -->
+<div class="modal fade modal-product" id="productModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="row g-4">
+          <div class="col-md-5">
+            <div class="prod-modal-img">
+              <img id="modalImg" src="" alt=""/>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              <button class="buy-btn flex-grow-1" onclick="buyNow()">Buy Now</button>
+              <button class="add-cart-btn flex-grow-1" onclick="addToCartFromModal()"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="prod-modal-title" id="modalTitle"></div>
+            <div class="prod-modal-rating">
+              <span class="rating-badge" id="modalRating"></span>
+              <span class="text-muted" style="font-size:13px" id="modalReviews"></span>
+            </div>
+            <hr class="my-2"/>
+            <div class="prod-modal-price mb-3">
+              <span class="curr" id="modalPrice"></span>
+              <span class="orig ms-2" id="modalOrig"></span>
+              <span class="disc ms-2" id="modalDisc"></span>
+            </div>
+            <div class="offer-tag mb-2"><i class="bi bi-tag-fill me-1"></i> <strong>Bank Offer</strong> – 10% off on HDFC Bank Credit Cards</div>
+            <div class="offer-tag mb-3"><i class="bi bi-arrow-repeat me-1"></i> <strong>7 Day Replacement</strong> Policy</div>
+            <div id="modalSpecs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART SIDEBAR  -->
+<div id="cart-overlay" onclick="toggleCart()"></div>
+<div id="cart-sidebar">
+  <div class="cart-header">
+    <h5><i class="bi bi-cart3 me-2"></i>My Cart</h5>
+    <button class="btn-close btn-close-white" onclick="toggleCart()"></button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-summary">
+      <div class="row"><div class="col">Items Total</div><div class="col-auto" id="cartSubtotal"></div></div>
+      <div class="row"><div class="col">Delivery Charges</div><div class="col-auto text-success fw-bold">FREE</div></div>
+      <div class="row total"><div class="col fw-bold">Total Amount</div><div class="col-auto fw-bold" id="cartTotal"></div></div>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout <i class="bi bi-arrow-right ms-1"></i></button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-wrap"></div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
